@@ -1,9 +1,11 @@
 package com.st.learning.springbucks.jpa;
 
+import com.bj58.fangchan.sydc.cms.log.core.annotation.OperationLogScan;
 import com.st.learning.springbucks.jpa.model.Coffee;
 import com.st.learning.springbucks.jpa.model.CoffeeOrder;
 import com.st.learning.springbucks.jpa.repository.CoffeeOrderRepository;
 import com.st.learning.springbucks.jpa.repository.CoffeeRepository;
+import com.st.learning.springbucks.jpa.service.OperationLogService;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
@@ -20,6 +22,7 @@ import java.util.Collections;
 @Slf4j
 @EnableJpaRepositories
 @SpringBootApplication
+@OperationLogScan(basePackages = "com.st.learning.springbucks.jpa")
 public class JpaDemoApplication implements ApplicationRunner {
 
     @Autowired
@@ -28,6 +31,9 @@ public class JpaDemoApplication implements ApplicationRunner {
     @Autowired
     private CoffeeOrderRepository orderRepository;
 
+    @Autowired
+    private OperationLogService operationLogService;
+
     public static void main(String[] args) {
         SpringApplication.run(JpaDemoApplication.class, args);
     }
@@ -35,7 +41,13 @@ public class JpaDemoApplication implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
 
-        initOrders();
+        Coffee coffee = new Coffee();
+        coffee.setId(1L);
+        coffee.setName("卡布奇诺");
+
+        operationLogService.trackMethod(coffee);
+
+        //initOrders();
 
     }
 
